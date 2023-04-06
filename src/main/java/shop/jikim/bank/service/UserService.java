@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import shop.jikim.bank.domain.user.User;
 import shop.jikim.bank.domain.user.UserEnum;
 import shop.jikim.bank.domain.user.UserRepository;
@@ -43,6 +44,7 @@ public class UserService {
 
 	@Getter
 	@Setter
+	@ToString
 	public static class JoinResponseDto {
 		private Long id;
 		private String username;
