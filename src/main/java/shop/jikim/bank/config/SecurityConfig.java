@@ -50,6 +50,13 @@ public class SecurityConfig {
 			.hasRole(UserEnum.ADMIN + "")
 			.anyRequest().permitAll();
 
+		// Exception 가로채기
+		http.exceptionHandling().authenticationEntryPoint((request, response, authException) -> {
+			// response.setContentType("application/json; charset=utf-8");
+			response.setStatus(403);
+			response.getWriter().println("error"); // TODO: 메시지를 포장하는 공통적인 응답 DTO
+		});
+
 		return http.build();
 	}
 
