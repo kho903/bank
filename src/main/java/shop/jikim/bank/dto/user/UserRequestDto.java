@@ -13,6 +13,12 @@ import shop.jikim.bank.domain.user.UserEnum;
 
 public class UserRequestDto {
 
+	@Getter
+	@Setter
+	public static class LoginRequestDto {
+		private String username;
+		private String password;
+	}
 
 	@Getter
 	@Setter
