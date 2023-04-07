@@ -14,6 +14,7 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import shop.jikim.bank.config.dummy.DummyObject;
 import shop.jikim.bank.domain.user.User;
 import shop.jikim.bank.domain.user.UserEnum;
 import shop.jikim.bank.domain.user.UserRepository;
@@ -22,7 +23,7 @@ import shop.jikim.bank.dto.user.UserResponseDto.JoinResponseDto;
 
 // Spring 관련 Bean 들이 하나도 없는 환경!
 @ExtendWith(MockitoExtension.class)
-class UserServiceTest {
+class UserServiceTest extends DummyObject {
 
 	@InjectMocks
 	private UserService userService;
@@ -46,16 +47,7 @@ class UserServiceTest {
 		when(userRepository.findByUsername(any())).thenReturn(Optional.empty());
 
 		// stub 2
-		User user = User.builder()
-			.id(1L)
-			.username("user")
-			.password("1234")
-			.fullname("kimuser")
-			.role(UserEnum.CUSTOMER)
-			.createdAt(LocalDateTime.now())
-			.updatedAt(LocalDateTime.now())
-			.build();
-
+		User user = newMockUser(1L, "user", "fulluser");
 		when(userRepository.save(any())).thenReturn(user);
 
 	    // when
