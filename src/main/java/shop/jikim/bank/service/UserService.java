@@ -1,5 +1,8 @@
 package shop.jikim.bank.service;
 
+import static shop.jikim.bank.dto.user.UserRequestDto.*;
+import static shop.jikim.bank.dto.user.UserResponseDto.*;
+
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -8,13 +11,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 import shop.jikim.bank.domain.user.User;
-import shop.jikim.bank.domain.user.UserEnum;
 import shop.jikim.bank.domain.user.UserRepository;
+import shop.jikim.bank.dto.user.UserRequestDto;
+import shop.jikim.bank.dto.user.UserResponseDto;
 import shop.jikim.bank.handler.exception.CustomApiException;
 
 @Service
@@ -42,39 +43,5 @@ public class UserService {
 		return new JoinResponseDto(userPs);
 	}
 
-	@Getter
-	@Setter
-	@ToString
-	public static class JoinResponseDto {
-		private Long id;
-		private String username;
-		private String fullname;
-
-		public JoinResponseDto(User user) {
-			this.id = user.getId();
-			this.username = user.getUsername();
-			this.fullname = user.getFullname();
-		}
-	}
-
-	@Getter
-	@Setter
-	public static class JoinRequestDto {
-		// 유효성 검사
-		private String username;
-		private String password;
-		private String email;
-		private String fullname;
-
-		public User toEntity(BCryptPasswordEncoder passwordEncoder) {
-			return User.builder()
-				.username(username)
-				.password(passwordEncoder.encode(password))
-				.email(email)
-				.fullname(fullname)
-				.role(UserEnum.CUSTOMER)
-				.build();
-		}
-	}
 
 }

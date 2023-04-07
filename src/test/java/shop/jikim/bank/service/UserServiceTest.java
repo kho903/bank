@@ -17,8 +17,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import shop.jikim.bank.domain.user.User;
 import shop.jikim.bank.domain.user.UserEnum;
 import shop.jikim.bank.domain.user.UserRepository;
-import shop.jikim.bank.service.UserService.JoinRequestDto;
-import shop.jikim.bank.service.UserService.JoinResponseDto;
+import shop.jikim.bank.dto.user.UserRequestDto.JoinRequestDto;
+import shop.jikim.bank.dto.user.UserResponseDto.JoinResponseDto;
 
 // Spring 관련 Bean 들이 하나도 없는 환경!
 @ExtendWith(MockitoExtension.class)
