@@ -62,7 +62,7 @@ public class AccountService {
 		private List<AccountDto> accounts = new ArrayList<>();
 
 		public AccountListResponseDto(User user, List<Account> accounts) {
-			this.fullname = fullname;
+			this.fullname = user.getFullname();
 			this.accounts = accounts.stream()
 				.map(AccountDto::new)
 				.collect(Collectors.toList());

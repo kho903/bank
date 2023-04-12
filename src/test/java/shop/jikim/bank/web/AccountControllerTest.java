@@ -22,6 +22,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import shop.jikim.bank.config.dummy.DummyObject;
 import shop.jikim.bank.domain.user.User;
 import shop.jikim.bank.domain.user.UserRepository;
+import shop.jikim.bank.service.AccountService;
+import shop.jikim.bank.service.AccountService.AccountListResponseDto;
 
 @Transactional
 @ActiveProfiles("test")
@@ -66,5 +68,17 @@ class AccountControllerTest extends DummyObject {
 
 		// then
 		resultActions.andExpect(status().isCreated());
+	}
+
+	@WithUserDetails(value = "user", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+	@Test
+	public void findUserAccount_test() throws Exception {
+	    // when
+		ResultActions resultActions = mvc.perform(get("/api/s/account/login-user"));
+		String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+		System.out.println("responseBody = " + responseBody);
+
+	    // then
+		resultActions.andExpect(status().isOk());
 	}
 }

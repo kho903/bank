@@ -3,6 +3,9 @@ package shop.jikim.bank.service;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -22,6 +25,7 @@ import shop.jikim.bank.domain.user.UserRepository;
 import shop.jikim.bank.dto.account.AccountRequestDto.AccountSaveRequestDto;
 import shop.jikim.bank.dto.account.AccountResponseDto;
 import shop.jikim.bank.dto.account.AccountResponseDto.AccountSaveResponseDto;
+import shop.jikim.bank.service.AccountService.AccountListResponseDto;
 
 @ExtendWith(MockitoExtension.class)
 class AccountServiceTest extends DummyObject {
@@ -65,5 +69,28 @@ class AccountServiceTest extends DummyObject {
 
 	    // then
 		assertThat(accountSaveRequestDto.getNumber()).isEqualTo(1111L);
+	}
+
+	@Test
+	public void findAccountByUser_test() throws Exception {
+	    // given
+		Long userId = 1L;
+		User user = newMockUser(userId, "user", "username");
+		when(userRepository.findById(any())).thenReturn(Optional.of(user));
+
+		Account account = newMockAccount(1111L, 1234L, 1000L, user);
+		Account account2 = newMockAccount(2222L, 2345L, 1000L, user);
+		List<Account> list = Arrays.asList(account, account2);
+		when(accountRepository.findByUser_Id(any())).thenReturn(list);
+
+		// when
+		AccountListResponseDto accountListResponseDto = accountService.findAccountByUser(userId);
+
+		String responseBody = om.writeValueAsString(accountListResponseDto);
+		System.out.println("responseBody = " + responseBody);
+
+		// then
+		assertThat(accountListResponseDto.getFullname()).isEqualTo("username");
+		assertThat(accountListResponseDto.getAccounts().size()).isEqualTo(2);
 	}
 }
