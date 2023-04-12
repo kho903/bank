@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,10 +18,9 @@ import lombok.RequiredArgsConstructor;
 import shop.jikim.bank.config.auth.LoginUser;
 import shop.jikim.bank.dto.ResponseDto;
 import shop.jikim.bank.dto.account.AccountRequestDto.AccountSaveRequestDto;
-import shop.jikim.bank.dto.account.AccountResponseDto;
-import shop.jikim.bank.handler.exception.CustomForbiddenException;
+import shop.jikim.bank.dto.account.AccountResponseDto.AccountListResponseDto;
+import shop.jikim.bank.dto.account.AccountResponseDto.AccountSaveResponseDto;
 import shop.jikim.bank.service.AccountService;
-import shop.jikim.bank.service.AccountService.AccountListResponseDto;
 
 @RestController
 @RequestMapping("/api")
@@ -34,7 +34,7 @@ public class AccountController {
 			BindingResult bindingResult,
 			@AuthenticationPrincipal LoginUser loginUser) {
 
-		AccountResponseDto.AccountSaveResponseDto accountSaveResponseDto =
+		AccountSaveResponseDto accountSaveResponseDto =
 			accountService.saveAccount(accountSaveRequestDto, loginUser.getUser().getId());
 		return new ResponseEntity<>(
 			new ResponseDto<>(1, "계좌등록 성공", accountSaveResponseDto),
@@ -50,5 +50,11 @@ public class AccountController {
 	public ResponseEntity<?> findUserAccount(@AuthenticationPrincipal LoginUser loginUser) {
 		AccountListResponseDto accountListResponseDto = accountService.findAccountByUser(loginUser.getUser().getId());
 		return new ResponseEntity<>(new ResponseDto<>(1, "계좌목록보기_유저별 성공", accountListResponseDto), HttpStatus.OK);
+	}
+
+	@DeleteMapping("/s/account/{number}")
+	public ResponseEntity<?> deleteAccount(@PathVariable Long number, LoginUser loginUser) {
+		accountService.deleteAccount(number, loginUser.getUser().getId());
+		return new ResponseEntity<>(new ResponseDto<>(1, "계좌 삭제 완료", null), HttpStatus.OK);
 	}
 }

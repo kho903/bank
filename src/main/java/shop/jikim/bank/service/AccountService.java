@@ -1,21 +1,18 @@
 package shop.jikim.bank.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import shop.jikim.bank.domain.account.Account;
 import shop.jikim.bank.domain.account.AccountRepository;
 import shop.jikim.bank.domain.user.User;
 import shop.jikim.bank.domain.user.UserRepository;
-import shop.jikim.bank.dto.account.AccountRequestDto;
+import shop.jikim.bank.dto.account.AccountRequestDto.AccountSaveRequestDto;
+import shop.jikim.bank.dto.account.AccountResponseDto.AccountListResponseDto;
 import shop.jikim.bank.dto.account.AccountResponseDto.AccountSaveResponseDto;
 import shop.jikim.bank.handler.exception.CustomApiException;
 
@@ -28,7 +25,7 @@ public class AccountService {
 	private final UserRepository userRepository;
 
 	@Transactional
-	public AccountSaveResponseDto saveAccount(AccountRequestDto.AccountSaveRequestDto accountSaveRequestDto, Long userId) {
+	public AccountSaveResponseDto saveAccount(AccountSaveRequestDto accountSaveRequestDto, Long userId) {
 		// User 가 DB에 있는지 검증
 		User userPs = userRepository.findById(userId)
 			.orElseThrow(() -> new CustomApiException("유저를 찾을 수 없습니다."));
@@ -55,31 +52,16 @@ public class AccountService {
 		return new AccountListResponseDto(userPs, accountListPS);
 	}
 
-	@Getter
-	@Setter
-	public static class AccountListResponseDto {
-		private String fullname;
-		private List<AccountDto> accounts = new ArrayList<>();
+	@Transactional
+	public void deleteAccount(Long accountNumber, Long userId) {
+		// 1. 계좌 확인
+		Account accountPS = accountRepository.findByNumber(accountNumber)
+			.orElseThrow(() -> new CustomApiException("계좌를 찾을 수 없습니다."));
 
-		public AccountListResponseDto(User user, List<Account> accounts) {
-			this.fullname = user.getFullname();
-			this.accounts = accounts.stream()
-				.map(AccountDto::new)
-				.collect(Collectors.toList());
-		}
+		// 2. 계좌 소유자 확인
+		accountPS.checkOwner(userId);
 
-		@Getter
-		@Setter
-		public class AccountDto {
-			private Long id;
-			private Long number;
-			private Long balance;
-
-			public AccountDto(Account account) {
-				this.id = account.getId();
-				this.number = account.getNumber();
-				this.balance = account.getBalance();
-			}
-		}
+		// 3. 계좌 삭제
+		accountRepository.deleteById(accountPS.getId());
 	}
 }

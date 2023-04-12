@@ -22,8 +22,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import shop.jikim.bank.config.dummy.DummyObject;
 import shop.jikim.bank.domain.user.User;
 import shop.jikim.bank.domain.user.UserRepository;
-import shop.jikim.bank.service.AccountService;
-import shop.jikim.bank.service.AccountService.AccountListResponseDto;
 
 @Transactional
 @ActiveProfiles("test")

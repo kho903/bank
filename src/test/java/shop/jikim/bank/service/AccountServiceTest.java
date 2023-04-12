@@ -1,9 +1,9 @@
 package shop.jikim.bank.service;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -23,9 +23,9 @@ import shop.jikim.bank.domain.account.AccountRepository;
 import shop.jikim.bank.domain.user.User;
 import shop.jikim.bank.domain.user.UserRepository;
 import shop.jikim.bank.dto.account.AccountRequestDto.AccountSaveRequestDto;
-import shop.jikim.bank.dto.account.AccountResponseDto;
+import shop.jikim.bank.dto.account.AccountResponseDto.AccountListResponseDto;
 import shop.jikim.bank.dto.account.AccountResponseDto.AccountSaveResponseDto;
-import shop.jikim.bank.service.AccountService.AccountListResponseDto;
+import shop.jikim.bank.handler.exception.CustomApiException;
 
 @ExtendWith(MockitoExtension.class)
 class AccountServiceTest extends DummyObject {
@@ -92,5 +92,21 @@ class AccountServiceTest extends DummyObject {
 		// then
 		assertThat(accountListResponseDto.getFullname()).isEqualTo("username");
 		assertThat(accountListResponseDto.getAccounts().size()).isEqualTo(2);
+	}
+
+	@Test
+	public void deleteAccount_test() throws Exception {
+	    // given
+		Long number = 1111L;
+		Long userId = 2L;
+
+		// stub
+		User user = newMockUser(1L, "user", "username");
+		Account account = newMockAccount(1L, number, 1000L, user);
+		when(accountRepository.findByNumber(any())).thenReturn(Optional.of(account));
+
+	    // when
+	    // then
+		assertThrows(CustomApiException.class, () -> accountService.deleteAccount(number, userId));
 	}
 }
